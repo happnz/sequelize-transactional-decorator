@@ -10,11 +10,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cls-hooked": "^4.3.4",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "eslint": "^8.46.0",
     "pg": "^8.11.2",
     "prettier": "3.0.1",
     "sequelize": "^6.32.1",
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "cls-hooked": "^4.2.2"
   }
 }
