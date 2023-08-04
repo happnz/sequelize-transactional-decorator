@@ -1,14 +1,16 @@
 {
   "name": "sequelize-transactional-decorator",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "A Transactional method decorator for Sequelize ORM",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "happnz",
+  "license": "MIT",
+  "files": ["dist"],
   "devDependencies": {
     "@types/cls-hooked": "^4.3.4",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
@@ -20,5 +22,8 @@
   },
   "dependencies": {
     "cls-hooked": "^4.2.2"
+  },
+  "peerDependencies": {
+    "sequelize": ">= 4 < 7"
   }
 }
