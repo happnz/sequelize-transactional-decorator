@@ -9,10 +9,16 @@ export function initSequelizeCLS() {
   }
 }
 
-let sequelize: Sequelize;
+export const DEFAULT_CONNECTION_NAME = 'default';
 
-export const getSequelize = () => sequelize;
+const sequelizeConnections: Record<string, Sequelize> = {};
 
-export function initSequelizeTransactional(sequelizeConnection: Sequelize) {
-  sequelize = sequelizeConnection;
+export const getSequelize = (connectionName = DEFAULT_CONNECTION_NAME) =>
+  sequelizeConnections[connectionName];
+
+export function initSequelizeTransactional(
+  sequelizeConnection: Sequelize,
+  connectionName = DEFAULT_CONNECTION_NAME
+) {
+  sequelizeConnections[connectionName] = sequelizeConnection;
 }

@@ -1,12 +1,29 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
-import { initSequelizeTransactional } from '../init-sequelize-transactional';
+import {
+  DEFAULT_CONNECTION_NAME,
+  initSequelizeTransactional,
+} from '../init-sequelize-transactional';
+import { InjectConnection } from '@nestjs/sequelize';
 
-@Module({})
-export class SequelizeTransactionalModule implements OnModuleInit {
-  constructor(private readonly sequelize: Sequelize) {}
+interface moduleOptions {
+  connectionName: string;
+}
 
-  onModuleInit() {
-    initSequelizeTransactional(this.sequelize);
+export class SequelizeTransactionalModule {
+  static register(options?: moduleOptions) {
+    const connectionName = options?.connectionName || DEFAULT_CONNECTION_NAME;
+
+    @Module({})
+    class _SequelizeTransactionalModule {
+      constructor(
+        @InjectConnection(connectionName)
+        sequelize: Sequelize
+      ) {
+        initSequelizeTransactional(sequelize, connectionName);
+      }
+    }
+
+    return _SequelizeTransactionalModule;
   }
 }
