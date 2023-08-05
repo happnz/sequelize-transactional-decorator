@@ -2,10 +2,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "experimentalDecorators": true,
-    "target": "ES2019",
+    "emitDecoratorMetadata": true,
+    "target": "ES2021",
     "module": "CommonJS",
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": true
   },
   "include": [

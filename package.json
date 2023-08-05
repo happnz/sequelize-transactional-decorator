@@ -10,14 +10,18 @@
   "keywords": [],
   "author": "happnz",
   "license": "MIT",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
+    "@nestjs/common": "^10.1.3",
     "@types/cls-hooked": "^4.3.4",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "eslint": "^8.46.0",
     "pg": "^8.11.2",
     "prettier": "3.0.1",
     "sequelize": "^6.32.1",
+    "sequelize-typescript": "^2.1.5",
     "typescript": "^5.1.6"
   },
   "dependencies": {
