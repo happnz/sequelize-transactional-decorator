@@ -1,14 +1,11 @@
 import { DEFAULT_CONNECTION_NAME, getSequelize } from './init-sequelize-transactional';
+import { Transaction, TransactionOptions } from 'sequelize';
 
-enum IsolationLevel {
-  READ_UNCOMMITTED = 'READ UNCOMMITTED',
-  READ_COMMITTED = 'READ COMMITTED',
-  REPEATABLE_READ = 'REPEATABLE READ',
-  SERIALIZABLE = 'SERIALIZABLE',
-}
+type IsolationLevel = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
 
 interface TransactionalOptions {
   connectionName?: string;
+  isolationLevel?: IsolationLevel;
 }
 
 export function Transactional(options?: TransactionalOptions) {
@@ -26,7 +23,13 @@ export function Transactional(options?: TransactionalOptions) {
         );
       }
 
-      return await sequelize.transaction(async () => {
+      const transactionOptions: TransactionOptions = {};
+
+      if (options?.isolationLevel) {
+        transactionOptions.isolationLevel = options.isolationLevel as Transaction.ISOLATION_LEVELS;
+      }
+
+      return await sequelize.transaction(transactionOptions, async () => {
         return await originalMethod.call(this, ...args);
       });
     };
