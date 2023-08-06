@@ -102,3 +102,26 @@ export class AppService {
 }
 
 ```
+
+`@Transactional` decorator accepts `options` object:
+```typescript
+{
+  connectionName?: string; // if your connection has custom name, pass it here
+  isolationLevel?: string; // Isolation Level of transaction. Default value depends on your Sequelize config or the database you use
+}
+```
+
+
+## Mocking in unit tests
+
+If you want to remove transactional logic from your unit tests, you can mock `@Transactional` decorator.
+
+Example in Jest:
+
+```typescript
+jest.mock('sequelize-transactional-decorator', () => ({
+  Transactional: () => () => ({}),
+}));
+```
+
+However, you can test your code with `@Transactional` as usual, if you configure it in tests following the same steps described above.
