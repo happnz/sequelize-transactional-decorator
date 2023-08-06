@@ -1,4 +1,8 @@
-import { DEFAULT_CONNECTION_NAME, getSequelize } from './init-sequelize-transactional';
+import {
+  DEFAULT_CONNECTION_NAME,
+  getSequelize,
+  getTransactionalNamespace,
+} from './init-sequelize-transactional';
 import { Transaction, TransactionOptions } from 'sequelize';
 
 type IsolationLevel = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
@@ -21,6 +25,14 @@ export function Transactional(options?: TransactionalOptions) {
         throw new Error(
           'Error trying to get sequelize connection in @Transactional method. It is possible that your Sequelize connection uses custom name and you did not specify it in decorator "connectionName" option'
         );
+      }
+
+      const currentTransaction = getTransactionalNamespace().get('transaction');
+
+      const currentTransactionExists = currentTransaction?.sequelize === sequelize;
+
+      if (currentTransactionExists) {
+        return await originalMethod.call(this, ...args);
       }
 
       const transactionOptions: TransactionOptions = {};

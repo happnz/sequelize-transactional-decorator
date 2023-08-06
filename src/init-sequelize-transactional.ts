@@ -1,9 +1,21 @@
 import { Sequelize } from 'sequelize';
-import { createNamespace } from 'cls-hooked';
+import { createNamespace, Namespace } from 'cls-hooked';
+
+let transactionalNamespace: Namespace;
+
+export const getTransactionalNamespace = () => {
+  if (transactionalNamespace) {
+    return transactionalNamespace;
+  }
+  throw new Error(
+    'Could not find namespace for transactions. Make sure you called initSequelizeCLS() before creating Sequelize connections'
+  );
+};
 
 export function initSequelizeCLS() {
   if (typeof Sequelize.useCLS === 'function') {
-    Sequelize.useCLS(createNamespace('sequelize-transactional-namespace'));
+    transactionalNamespace = createNamespace('sequelize-transactional-decorator-namespace');
+    Sequelize.useCLS(transactionalNamespace);
   } else {
     throw Error('Cannot call Sequelize.useCLS (need Sequelize version 4 or later)');
   }

@@ -97,7 +97,7 @@ export class AppService {
   async appMethod(): Promise<void> {
     await this.something.create({ message: 'hello' });
     await this.something.create({ message: 'world' });
-    await this.anotherService.method(); // other service's method will use the same transaction unless also marked with @Transactional (in that case, that method will use its own transaction)
+    await this.anotherService.method(); // other service's method will use the same transaction
   }
 }
 
