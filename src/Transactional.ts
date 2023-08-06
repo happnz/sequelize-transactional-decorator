@@ -7,9 +7,14 @@ import { Transaction, TransactionOptions } from 'sequelize';
 
 type IsolationLevel = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
 
+type Propagation = 'REQUIRED' | 'SUPPORTS' | 'MANDATORY' | 'NEVER';
+
+const DEFAULT_PROPAGATION = 'REQUIRED';
+
 interface TransactionalOptions {
   connectionName?: string;
   isolationLevel?: IsolationLevel;
+  propagation?: Propagation;
 }
 
 export function Transactional(options?: TransactionalOptions) {
@@ -27,13 +32,7 @@ export function Transactional(options?: TransactionalOptions) {
         );
       }
 
-      const currentTransaction = getTransactionalNamespace().get('transaction');
-
-      const currentTransactionExists = currentTransaction?.sequelize === sequelize;
-
-      if (currentTransactionExists) {
-        return await originalMethod.call(this, ...args);
-      }
+      const callOriginalMethod = async () => originalMethod.call(this, ...args);
 
       const transactionOptions: TransactionOptions = {};
 
@@ -41,9 +40,42 @@ export function Transactional(options?: TransactionalOptions) {
         transactionOptions.isolationLevel = options.isolationLevel as Transaction.ISOLATION_LEVELS;
       }
 
-      return await sequelize.transaction(transactionOptions, async () => {
-        return await originalMethod.call(this, ...args);
-      });
+      const currentTransaction = getTransactionalNamespace().get('transaction');
+
+      const currentTransactionExists = currentTransaction?.sequelize === sequelize;
+
+      const propagation = options?.propagation || DEFAULT_PROPAGATION;
+
+      if (propagation === 'REQUIRED') {
+        if (currentTransactionExists) {
+          return await callOriginalMethod();
+        }
+        return await sequelize.transaction(transactionOptions, async () => {
+          return await callOriginalMethod();
+        });
+      }
+
+      if (propagation === 'SUPPORTS') {
+        return await callOriginalMethod();
+      }
+
+      if (propagation === 'MANDATORY') {
+        if (currentTransactionExists) {
+          return await callOriginalMethod();
+        }
+        throw new Error(
+          'For transaction with Propagation.MANDATORY active transaction is required but was not found'
+        );
+      }
+
+      if (propagation === 'NEVER') {
+        if (currentTransactionExists) {
+          throw new Error(
+            'For transaction with Propagation.NEVER there must be no active transaction but one was not found'
+          );
+        }
+        return await callOriginalMethod();
+      }
     };
   };
 }
