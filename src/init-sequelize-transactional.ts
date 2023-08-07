@@ -32,5 +32,10 @@ export function initSequelizeTransactional(
   sequelizeConnection: Sequelize,
   connectionName = DEFAULT_CONNECTION_NAME
 ) {
+  if (!transactionalNamespace) {
+    throw new Error(
+      'Sequelize CLS not enabled. Call initSequelizeCLS() before calling initSequelizeTransactional()'
+    );
+  }
   sequelizeConnections[connectionName] = sequelizeConnection;
 }
