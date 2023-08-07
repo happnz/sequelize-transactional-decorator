@@ -7,7 +7,13 @@ import { Transaction, TransactionOptions } from 'sequelize';
 
 type IsolationLevel = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
 
-type Propagation = 'REQUIRED' | 'SUPPORTS' | 'MANDATORY' | 'NEVER';
+type Propagation =
+  | 'REQUIRED'
+  | 'SUPPORTS'
+  | 'MANDATORY'
+  | 'NEVER'
+  | 'NOT_SUPPORTED'
+  | 'REQUIRES_NEW';
 
 const DEFAULT_PROPAGATION = 'REQUIRED';
 
@@ -40,7 +46,14 @@ export function Transactional(options?: TransactionalOptions) {
         transactionOptions.isolationLevel = options.isolationLevel as Transaction.ISOLATION_LEVELS;
       }
 
-      const currentTransaction = getTransactionalNamespace().get('transaction');
+      const callInNewTransaction = async () =>
+        sequelize.transaction(transactionOptions, async () => {
+          return await callOriginalMethod();
+        });
+
+      const transactionalNamespace = getTransactionalNamespace();
+
+      const currentTransaction = transactionalNamespace.get('transaction');
 
       const currentTransactionExists = currentTransaction?.sequelize === sequelize;
 
@@ -50,9 +63,7 @@ export function Transactional(options?: TransactionalOptions) {
         if (currentTransactionExists) {
           return await callOriginalMethod();
         }
-        return await sequelize.transaction(transactionOptions, async () => {
-          return await callOriginalMethod();
-        });
+        return await callInNewTransaction();
       }
 
       if (propagation === 'SUPPORTS') {
@@ -75,6 +86,24 @@ export function Transactional(options?: TransactionalOptions) {
           );
         }
         return await callOriginalMethod();
+      }
+
+      if (propagation === 'NOT_SUPPORTED') {
+        if (currentTransactionExists) {
+          transactionalNamespace.set('transaction', null);
+
+          try {
+            return await callOriginalMethod();
+          } finally {
+            transactionalNamespace.set('transaction', currentTransaction);
+          }
+        } else {
+          return await callOriginalMethod();
+        }
+      }
+
+      if (propagation === 'REQUIRES_NEW') {
+        return await callInNewTransaction();
       }
     };
   };
