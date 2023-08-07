@@ -21,21 +21,17 @@ export function initSequelizeCLS() {
   }
 }
 
-export const DEFAULT_CONNECTION_NAME = 'default';
+export const CONNECTION_NAME = 'primary';
 
 const sequelizeConnections: Record<string, Sequelize> = {};
 
-export const getSequelize = (connectionName = DEFAULT_CONNECTION_NAME) =>
-  sequelizeConnections[connectionName];
+export const getSequelize = () => sequelizeConnections[CONNECTION_NAME];
 
-export function initSequelizeTransactional(
-  sequelizeConnection: Sequelize,
-  connectionName = DEFAULT_CONNECTION_NAME
-) {
+export function initSequelizeTransactional(sequelizeConnection: Sequelize) {
   if (!transactionalNamespace) {
     throw new Error(
       'Sequelize CLS not enabled. Call initSequelizeCLS() before calling initSequelizeTransactional()'
     );
   }
-  sequelizeConnections[connectionName] = sequelizeConnection;
+  sequelizeConnections[CONNECTION_NAME] = sequelizeConnection;
 }

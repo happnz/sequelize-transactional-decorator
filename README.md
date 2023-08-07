@@ -61,10 +61,7 @@ If you specified custom connection name in `SequelizeModule`, pass `connectionNa
 export class AppModule {}
 ```
 
-If you have multiple Sequelize connections, import `SequelizeTransactionalModule.register` for each connection
-
-
-### If you dont use NestJS 
+### If you don't use NestJS 
 
 Just call _initSequelizeTransactional_ after establishing a connection:
 

@@ -1,8 +1,4 @@
-import {
-  DEFAULT_CONNECTION_NAME,
-  getSequelize,
-  getTransactionalNamespace,
-} from './init-sequelize-transactional';
+import { getSequelize, getTransactionalNamespace } from './init-sequelize-transactional';
 import { Transaction, TransactionOptions } from 'sequelize';
 
 type IsolationLevel = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
@@ -18,7 +14,6 @@ type Propagation =
 const DEFAULT_PROPAGATION = 'REQUIRED';
 
 interface TransactionalOptions {
-  connectionName?: string;
   isolationLevel?: IsolationLevel;
   propagation?: Propagation;
 }
@@ -28,9 +23,7 @@ export function Transactional(options?: TransactionalOptions) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args) {
-      const connectionName = options?.connectionName || DEFAULT_CONNECTION_NAME;
-
-      const sequelize = getSequelize(connectionName);
+      const sequelize = getSequelize();
 
       if (!sequelize) {
         throw new Error(

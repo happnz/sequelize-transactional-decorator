@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
-import {
-  DEFAULT_CONNECTION_NAME,
-  initSequelizeTransactional,
-} from '../init-sequelize-transactional';
+import { initSequelizeTransactional } from '../init-sequelize-transactional';
 import { InjectConnection } from '@nestjs/sequelize';
 
 interface moduleOptions {
   connectionName: string;
 }
 
+const NEST_SEQUELIZE_DEFAULT_CONNECTION_NAME = 'default';
+
 export class SequelizeTransactionalModule {
   static register(options?: moduleOptions) {
-    const connectionName = options?.connectionName || DEFAULT_CONNECTION_NAME;
+    const connectionName = options?.connectionName || NEST_SEQUELIZE_DEFAULT_CONNECTION_NAME;
 
     @Module({})
     class _SequelizeTransactionalModule {
@@ -20,7 +19,7 @@ export class SequelizeTransactionalModule {
         @InjectConnection(connectionName)
         sequelize: Sequelize
       ) {
-        initSequelizeTransactional(sequelize, connectionName);
+        initSequelizeTransactional(sequelize);
       }
     }
 
