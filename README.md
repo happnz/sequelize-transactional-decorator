@@ -99,7 +99,6 @@ export class AppService {
 `@Transactional` decorator accepts `options` object:
 ```typescript
 {
-  connectionName?: string; // if your connection has custom name, pass it here
   isolationLevel?: string; // Isolation Level of transaction. Default value depends on your Sequelize config or the database you use
   propagation?: string; // Default value is REQUIRED. Allowed options are described below
 }
