@@ -1,19 +1,22 @@
-# sequelize-transactional-decorator
+# Sequelize Transactional decorator
 
-A `Transactional` method decorator for Sequelize inspired by Java Spring's `Transactional` annotation. 
+A `@Transactional` method decorator for **Sequelize** inspired by Java Spring's `@Transactional` annotation. 
 
-Easy usage with NestJS.
+Simple integration with **NestJS**.
 
 ## Installation
 
 ```shell
+# npm
 npm install --save sequelize-transactional-decorator
+# yarn
+yarn add sequelize-transactional-decorator
 ```
 
 
 ## Usage
 
-### _Step 1_
+### Step 1
 
 **Before establishing any connections** using Sequelize,
 you need to enable Sequelize to use node CLS:
@@ -24,9 +27,9 @@ import { initSequelizeCLS } from 'sequelize-transactional-decorator';
 initSequelizeCLS();
 ```
 
-### _Step 2_
+### Step 2
 
-### If you use sequelize in your NestJS app:
+### With NestJS:
 
 Import `SequelizeTransactionalModule.register()` into your root application module.
 
@@ -61,9 +64,9 @@ If you specified custom connection name in `SequelizeModule`, pass `connectionNa
 export class AppModule {}
 ```
 
-### If you don't use NestJS 
+### Without NestJS:
 
-Just call _initSequelizeTransactional_ after establishing a connection:
+Just call `initSequelizeTransactional` after establishing a connection:
 
 ```typescript
 const sequelize = new Sequelize({ ... })
@@ -73,7 +76,7 @@ initSequelizeTransactional(sequelize) // pass your Sequelize conection here
 
 ### Step 3
 
-Use `Transactional` annotation on your class methods.
+Use `@Transactional` annotation on your class methods.
 
 Example:
 
