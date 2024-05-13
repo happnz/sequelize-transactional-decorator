@@ -6,7 +6,7 @@
     "target": "ES2021",
     "module": "CommonJS",
     "allowSyntheticDefaultImports": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "declaration": true
   },
   "include": [

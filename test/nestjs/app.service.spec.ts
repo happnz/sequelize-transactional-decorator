@@ -1,13 +1,14 @@
-import { Sequelize } from 'sequelize-typescript';
+import { Repository, Sequelize } from 'sequelize-typescript';
 import { Test, TestingModule } from '@nestjs/testing';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppService } from './app.service';
 import { Comment } from '../entity/comment.entity';
-import { initSequelizeCLS, SequelizeTransactionalModule } from '../../src';
+import { initSequelizeCLS, SequelizeTransactionalModule } from '../../dist';
 
 describe('AppService', () => {
   let appService: AppService;
   let sequelize: Sequelize;
+  let commentRepository: Repository<Comment>;
 
   let testingModule: TestingModule;
 
@@ -17,9 +18,13 @@ describe('AppService', () => {
     testingModule = await Test.createTestingModule({
       imports: [
         SequelizeModule.forRoot({
-          dialect: 'sqlite',
-          storage: ':memory:',
-          logging: console.log,
+          dialect: 'postgres',
+          database: process.env.POSTGRES_DATABASE_NAME,
+          host: process.env.POSTGRES_DATABASE_HOST,
+          port: Number(process.env.POSTGRES_DATABASE_PORT),
+          username: process.env.POSTGRES_DATABASE_USERNAME,
+          password: process.env.POSTGRES_DATABASE_PASSWORD,
+          logging: false,
           autoLoadModels: true,
         }),
         SequelizeTransactionalModule.register(),
@@ -28,8 +33,10 @@ describe('AppService', () => {
       providers: [AppService],
     }).compile();
 
+
     appService = testingModule.get(AppService);
     sequelize = testingModule.get(Sequelize);
+    commentRepository = sequelize.getRepository(Comment);
   });
 
   afterAll(async () => {
@@ -37,12 +44,12 @@ describe('AppService', () => {
   });
 
   beforeEach(async () => {
-    await Comment.truncate();
+    await commentRepository.truncate();
   });
 
   it('should create 2 instances successfully', async () => {
     await appService.create();
-    const comments = await sequelize.getRepository(Comment).findAll();
+    const comments = await commentRepository.findAll();
     expect(comments.map((a) => a.message).sort()).toEqual(['hello', 'world']);
   });
 
@@ -53,7 +60,7 @@ describe('AppService', () => {
     } catch (error) {
       expect(error.message).toEqual('failing on purpose');
     }
-    const comments = await sequelize.getRepository(Comment).findAll();
+    const comments = await commentRepository.findAll();
     expect(comments).toHaveLength(0);
   });
 });
