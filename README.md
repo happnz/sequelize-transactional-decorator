@@ -4,6 +4,10 @@ A `@Transactional` method decorator for **Sequelize** inspired by Java Spring's 
 
 Simple integration with **NestJS**.
 
+## Requirements
+
+- [sequelize](https://github.com/sequelize/sequelize) v4-6
+
 ## Installation
 
 ```shell
@@ -126,7 +130,10 @@ export class AppService {
 
 For more info refer to your database documentation.
 
-## Mocking in unit tests
+
+## Testing
+
+### Mocking in unit tests
 
 If you want to remove transactional logic from your unit tests, you can mock `@Transactional` decorator.
 
@@ -138,4 +145,9 @@ jest.mock('sequelize-transactional-decorator', () => ({
 }));
 ```
 
-However, you can test your code with `@Transactional` as usual, if you configure it in tests following the same steps described above.
+### Testing with `@Transactional`
+You can test your code with `@Transactional` as usual, if you configure it in tests following the same steps described above.
+
+**NOTE**: you will have to run your tests sequentially (which may be slower) rather than in parallel.  
+This is because only one simultaneous Sequelize connection is supported in order for decorator to work.  
+For example, in jest you will need to use `--runInBand` option.
