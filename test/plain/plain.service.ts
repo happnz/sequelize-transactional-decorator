@@ -1,12 +1,13 @@
 import { Comment } from '../entity/comment.entity';
-import { Transactional } from '../../src';
+import { Transactional } from '../../dist';
+import { Repository } from 'sequelize-typescript';
 
 export class PlainService {
-  constructor(private readonly commentEntity: typeof Comment) {}
+  constructor(private readonly commentRepository: Repository<Comment>) {}
 
   @Transactional()
   async create(fail = false): Promise<void> {
-    await this.commentEntity.create({ message: 'hello' });
+    await this.commentRepository.create({ message: 'hello' });
     await this.createAnother(fail);
   }
 
@@ -14,6 +15,6 @@ export class PlainService {
     if (fail) {
       throw new Error('failing on purpose');
     }
-    await this.commentEntity.create({ message: 'world' });
+    await this.commentRepository.create({ message: 'world' });
   }
 }

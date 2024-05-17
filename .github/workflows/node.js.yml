@@ -29,7 +29,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x, 20.x]
+        node-version: [18.x, 20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -39,12 +39,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-      env:
-        POSTGRES_DATABASE_NAME: 'postgres'
-        POSTGRES_DATABASE_HOST: 'localhost'
-        POSTGRES_DATABASE_PORT: 5432
-        POSTGRES_DATABASE_USERNAME: 'postgres'
-        POSTGRES_DATABASE_PASSWORD: 'postgres'
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+      env:
+        POSTGRES_DATABASE_NAME: postgres
+        POSTGRES_DATABASE_HOST: localhost
+        POSTGRES_DATABASE_PORT: 5432
+        POSTGRES_DATABASE_USERNAME: postgres
+        POSTGRES_DATABASE_PASSWORD: postgres

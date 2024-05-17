@@ -1,25 +1,18 @@
 import { PlainService } from './plain.service';
-import { initSequelizeCLS, initSequelizeTransactional } from '../../src';
-import { Sequelize } from 'sequelize-typescript';
+import { Repository, Sequelize } from 'sequelize-typescript';
 import { Comment } from '../entity/comment.entity';
+import { setupSequelizeForTests } from '../utils';
 
 describe('PlainService', () => {
   let sequelize: Sequelize;
+  let commentRepository: Repository<Comment>;
   let plainService: PlainService;
 
   beforeAll(async () => {
-    initSequelizeCLS();
+    sequelize = await setupSequelizeForTests();
 
-    sequelize = await new Sequelize({
-      dialect: 'sqlite',
-      storage: ':memory:',
-      logging: console.log,
-      models: [Comment],
-    }).sync({ force: true });
-
-    initSequelizeTransactional(sequelize);
-
-    plainService = new PlainService(Comment);
+    commentRepository = sequelize.getRepository(Comment);
+    plainService = new PlainService(commentRepository);
   });
 
   afterAll(async () => {
@@ -27,7 +20,7 @@ describe('PlainService', () => {
   });
 
   beforeEach(async () => {
-    await Comment.truncate();
+    await commentRepository.truncate();
   });
 
   it('should create 2 instances successfully', async () => {

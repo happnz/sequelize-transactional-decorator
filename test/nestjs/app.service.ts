@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { Injectable } from '@nestjs/common';
 import { Comment } from '../entity/comment.entity';
-import { Transactional } from '../../src';
+import { Transactional } from '../../dist';
 
 @Injectable()
 export class AppService {
