@@ -1,6 +1,6 @@
 {
   "name": "sequelize-transactional-decorator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Transactional method decorator for Sequelize ORM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
