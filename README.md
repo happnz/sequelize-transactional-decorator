@@ -1,5 +1,9 @@
 # Sequelize Transactional decorator
 
+[![Build status](https://github.com/happnz/sequelize-transactional-decorator/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/happnz/sequelize-transactional-decorator/actions/workflows/node.js.yml?query=branch%3Amain)
+[![NPM](https://img.shields.io/npm/v/sequelize-transactional-decorator.svg)](https://www.npmjs.com/package/sequelize-transactional-decorator)
+![Downloads](https://img.shields.io/npm/dm/sequelize-transactional-decorator)
+
 A `@Transactional` method decorator for **Sequelize** inspired by Java Spring's `@Transactional` annotation. 
 
 Simple integration with **NestJS**.
