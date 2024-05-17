@@ -2,6 +2,6 @@
   "preset": "ts-jest",
   "testEnvironment": "node",
   "collectCoverage": true,
-  "collectCoverageFrom": ["./src/**"],
+  "collectCoverageFrom": ["./dist/**"],
   "coverageDirectory": "coverage"
 }
